@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.pyc
+vision/.venv/
+.pytest_cache/
+
+# Локальные веса (COCO yolov8n/yolov8s): ultralytics скачивает их сам.
+# Веса ANPR лежат в submodule anpr/.
+vision/*.pt
+
+# Данные и артефакты (локальные, в репозиторий не попадают)
+data/images/
+vision/dataset/
+images/
+*.log
+
+# Логи и PID-файл серверного запуска
+deploy/logs/
+deploy/backup/
+
+# Рантайм-лог в корне (start_all/stop_all + ручные запуски)
+logs/
+
+# Утилита замера FPS камеры (диагностика, не часть продукта)
+vision/fps_test.py
+
+# Java / Maven
+backend/target/
+
+# Секреты и локальные настройки
+backend/.env
+vision/config.yaml
+vision/config.prod.yaml
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Дампы журнала (backup_journal.ps1)
+backup/

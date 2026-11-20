@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Как оформлять заявки
+    url: https://github.com/VikingCyber/argus/blob/main/docs/ZAYAVKI.md
+    about: Что писать в заявке, чтобы её быстрее исправили, и как идут статусы

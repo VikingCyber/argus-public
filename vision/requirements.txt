@@ -1,0 +1,21 @@
+# Зависимости vision. Версии зафиксированы по рабочему окружению (Python 3.14, Windows).
+# На сервере сначала поставь CPU-сборку torch (обычный pip тянет CUDA ~2.5 ГБ),
+# затем этот файл — pip увидит, что torch уже установлен, и пропустит его:
+#
+#   py -3.12 -m venv .venv
+#   .\.venv\Scripts\python -m pip install torch==2.13.0 torchvision==0.28.0 ^
+#       --index-url https://download.pytorch.org/whl/cpu
+#   .\.venv\Scripts\python -m pip install -r requirements.txt
+
+torch==2.13.0
+torchvision==0.28.0
+ultralytics==8.4.121
+opencv-python==5.0.0.93
+numpy==2.5.2
+pandas==3.0.5
+matplotlib==3.11.1
+seaborn==0.13.2
+python-Levenshtein==0.27.4
+PyYAML==6.0.3
+requests==2.34.2
+pillow==12.3.0

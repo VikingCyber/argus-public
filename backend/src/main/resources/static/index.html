@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Argus — видеоаналитика</title>
+    <link rel="stylesheet" href="style.css?v=4">
+</head>
+<body>
+<header class="topbar">
+    <div class="brand">Система видеонаблюдения</div>
+    <div class="stats" id="stats">
+        <div class="stat"><span class="stat-value" id="stat-plates">—</span><span class="stat-label">номеров за период</span></div>
+        <div class="stat"><span class="stat-value" id="stat-unique">—</span><span class="stat-label">уникальных</span></div>
+        <div class="stat"><span class="stat-value stat-warn" id="stat-denied">—</span><span class="stat-label">чужих</span></div>
+        <div class="stat"><span class="stat-value stat-danger" id="stat-alerts">—</span><span class="stat-label">тревог</span></div>
+        <div class="stat"><span class="stat-value" id="stat-last">—</span><span class="stat-label">обновлено</span></div>
+    </div>
+</header>
+
+<main>
+    <section class="card">
+        <div class="filters">
+            <div class="filter-row">
+                <input type="search" id="q" class="input input-search" placeholder="Поиск: номер (любая раскладка) или тип тревоги…  ( / )">
+                <select id="camera-filter" class="input"><option value="">Все камеры</option></select>
+                <div class="tabs" id="kind-tabs">
+                    <button class="tab active" data-kind="">Все</button>
+                    <button class="tab" data-kind="PLATE">Номера</button>
+                    <button class="tab" data-kind="ALERT">Тревоги</button>
+                </div>
+                <select id="type-filter" class="input hidden"><option value="">Все типы тревог</option></select>
+                <select id="decision-filter" class="input hidden">
+                    <option value="">Любой статус</option>
+                    <option value="ALLOWED">Свой</option>
+                    <option value="ALLOWED_FUZZY">Свой приблизительно</option>
+                    <option value="DENIED">Чужой</option>
+                </select>
+            </div>
+
+            <div class="filter-row">
+                <div class="range-buttons">
+                    <button class="chip" data-days="0">Сегодня</button>
+                    <button class="chip" data-days="7">7 дней</button>
+                    <button class="chip" data-days="30">30 дней</button>
+                    <button class="chip active" data-days="0-all">Всё время</button>
+                </div>
+                <label class="field">С <input type="datetime-local" id="from" class="input" step="1"></label>
+                <label class="field">По <input type="datetime-local" id="to" class="input" step="1"></label>
+                <button class="btn" id="reset">Сбросить</button>
+                <span class="spacer"></span>
+                <label class="switch">
+                    <input type="checkbox" id="auto" checked>
+                    <span>Автообновление 5 с</span>
+                </label>
+                <button class="btn" id="export">Экспорт CSV</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="card">
+        <div class="card-head">
+            <h2>Журнал</h2>
+            <span class="muted" id="range-label">за всё время</span>
+        </div>
+
+        <div class="new-entries hidden" id="new-entries">
+            <button class="btn btn-accent" id="new-entries-btn">↑ Новые записи — показать</button>
+        </div>
+
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th class="th-time">Время</th>
+                    <th>Вид</th>
+                    <th>Номер</th>
+                    <th>Статус</th>
+                    <th>Фото</th>
+                    <th>Камера</th>
+                    <th>th-num">Уверенность</th>
+                    <th class="th-num">Проезд</th>
+                </tr>
+                </thead>
+                <tbody id="journal">
+                <tr><td colspan="8" class="empty">Загрузка…</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pager">
+            <div class="pager-info" id="pager-info">—</div>
+            <div class="pager-controls">
+                <label class="field">Показывать
+                    <select id="size" class="input input-sm">
+                        <option>20</option>
+                        <option selected>50</option>
+                        <option>100</option>
+                        <option>200</option>
+                    </select>
+                </label>
+                <div class="pages" id="pages"></div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div id="modal" class="modal hidden">
+    <button class="modal-nav modal-prev" id="modal-prev" aria-label="Предыдущее фото">‹</button>
+    <img id="modal-img" alt="Просмотр снимка">
+    <button class="modal-nav modal-next" id="modal-next" aria-label="Следующее фото">›</button>
+    <div class="modal-caption" id="modal-caption"></div>
+    <span class="modal-close" id="modal-close">&times;</span>
+</div>
+
+<script src="app.js?v=4"></script>
+</body>
+</html>

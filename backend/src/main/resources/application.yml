@@ -1,0 +1,83 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/argus
+    username: argus
+    # Пароль не хранится в репозитории: задаётся в backend\.env (DB_PASSWORD).
+    # Пустой по умолчанию — при отсутствии переменной backend не стартует,
+    # и это видно сразу, а не через неделю.
+    password: ${DB_PASSWORD:}
+  mail:
+    host: ${MAIL_SMTP_HOST:}
+    port: ${MAIL_SMTP_PORT:587}
+    username: ${MAIL_SMTP_USERNAME:}
+    password: ${MAIL_SMTP_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: ${MAIL_SMTP_STARTTLS:false}
+          ssl:
+            enable: ${MAIL_SMTP_SSL:true}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 25MB
+  web:
+    resources:
+      cache:
+        # 0 = не задавать Cache-Control max-age: браузер каждый раз
+        # переспрашивает ETag и получает свежие app.js/style.css.
+        # Без этого старый JS держится в кэше и продолжает бить в удалённые
+        # /api/v1/events/* после обновления jar.
+        period: 0
+        cachecontrol:
+          no-cache: true
+
+argus:
+  # Каталог снимков. Абсолютный путь задаётся переменной ARGUS_IMAGES_DIR
+  # (backend\.env или run_prod.ps1), иначе — относительный data/images.
+  # Через переменную, а не через -Dargus.images-dir: при запуске через
+  # `powershell -Command` токен -D с путём разваливался на части.
+  images-dir: ${ARGUS_IMAGES_DIR:data/images}
+  # Ключ для POST на /api/**. Задаётся в backend\.env (ARGUS_API_KEY) и должен
+  # совпадать с api_key в vision\config.prod.yaml. В git значения нет.
+  api-key: ${ARGUS_API_KEY:CHANGE_ME}
+  # Базовый адрес, по которому доступен сервер извне (в письмах-уведомлениях
+  # фото отдаются ссылкой, а не вложением). Пусто = в письме только локальный путь.
+  # Пример: http://192.168.1.10:8080  (или https://ваш-домен)
+  public-base-url: ${ARGUS_PUBLIC_BASE_URL:}
+  # База файловой шары со снимками (например \\192.168.1.10\images$).
+  # Если задана, в письме будет кликабельный UNC-путь к файлу.
+  file-base-url: ${ARGUS_FILE_BASE_URL:}
+  alerts:
+    # Повторный UNKNOWN_PLATE по той же камере и номеру в течение N минут не создаёт алерт и письмо
+    unknown-dedup-minutes: 15
+  # Ночная очистка старых данных: строки журнала и файлы снимков.
+  # Файлы удаляются по каталогам-датам images/YYYY-MM-DD, поэтому отсечка
+  # одна и та же: всё, что старше начала суток (сегодня - days).
+  retention:
+    enabled: ${ARGUS_RETENTION_ENABLED:true}
+    # Сколько дней хранить события и снимки (значение меньше 1 трактуется как 1)
+    days: ${ARGUS_RETENTION_DAYS:90}
+    # Свободное место ниже порога — письмо (не чаще раза в сутки). 0 = не проверять
+    min-free-gb: ${ARGUS_RETENTION_MIN_FREE_GB:5}
+    # Размер пакета DELETE: одна транзакция на всё держала бы блокировки слишком долго
+    batch-size: 500
+    # 03:30 по времени сервера (сек мин час день месяц день_недели)
+    cron: ${ARGUS_RETENTION_CRON:0 30 3 * * *}
+  notifications:
+    email:
+      enabled: ${MAIL_ENABLED:false}
+      from: ${MAIL_FROM:}
+      to: ${MAIL_TO:}
+      subject-prefix: Argus
+      # Страховка от шторма: максимум писем в час (0 = без лимита)
+      rate-limit-per-hour: ${MAIL_RATE_LIMIT_PER_HOUR:10}

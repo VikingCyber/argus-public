@@ -1,0 +1,12 @@
+tracker_type: bytetrack
+track_high_thresh: 0.25
+track_low_thresh: 0.1
+new_track_thresh: 0.25
+# track_buffer — сколько кадров ByteTrack держит ID после пропадания объекта.
+# Буфер считается в КАДРАХ ТРЕКЕРА, а main.py кормит трекер только НОВЫМИ кадрами
+# камеры (дедупликация по read_seq), т.е. кадры = реальные кадры камеры.
+# При ~4.5 fps камеры буфер 180 кадров = ~40с: переживает заслонения и уход
+# за край обзора без разрыва track_id (один проезд = одно событие).
+track_buffer: 180
+match_thresh: 0.8
+fuse_score: True
