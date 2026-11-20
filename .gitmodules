@@ -1,0 +1,3 @@
+[submodule "anpr"]
+	path = anpr
+	url = https://github.com/Runoi/ANPR-System.git

@@ -1,0 +1,18 @@
+services:
+  db:
+    image: postgres:16
+    container_name: argus-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: argus
+      POSTGRES_USER: argus
+      # Пароль не хранится в репозитории: docker compose up с незаданной
+      # переменной падает с понятной ошибкой, а не поднимает базу без пароля.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?задайте POSTGRES_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
